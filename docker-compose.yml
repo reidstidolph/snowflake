@@ -21,6 +21,7 @@ services:
       - db_service_name=db
       - db_name=db
       - db_retry_time=3000
+      - server=${SERVER}
 
   db:
     container_name: db

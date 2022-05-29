@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+'use strict'
+
+const scriptHost = process.env.server
+
+const script = `#!/usr/bin/env bash
 
 # check for root privilages
 if [[ $EUID -ne 0 ]]; then
@@ -37,7 +41,7 @@ function scan(){
 
   # populate network details
   # pipe through sed to work around lshw bug https://github.com/lyonel/lshw/pull/28 
-  NET_MAP=$(lshw -quiet -c network -json | sed 's/^\s*}\s*{\s*$/},{/')
+  NET_MAP=$(lshw -quiet -c network -json | sed 's/^\\s*}\\s*{\\s*$/},{/')
 
   # construct JSON string
   JSON_STRING=$(cat << EOF
@@ -84,7 +88,7 @@ fi
 if [ -f $UPLOADED ];then
     echo "Skipping upload, sysinfo already uploaded."
 else
-    curl -L -s --request POST -H "Content-Type: application/json" --data @$CACHE_FILE http://$1/api/devices
+    curl -L -s --request POST -H "Content-Type: application/json" --data @$CACHE_FILE http://${scriptHost}/api/devices
     if [ $? -eq 0 ]; then
       touch $UPLOADED
       echo ""
@@ -92,3 +96,17 @@ else
       echo "Could not upload sysinfo."
     fi
 fi
+`
+
+// export module
+module.exports = {
+	async getScript(req, res) {
+		try {
+      return res.send(script)
+    } catch (error) {
+      return res.status(400).send({
+        status: 'failure'
+      })
+    }
+  }
+}
