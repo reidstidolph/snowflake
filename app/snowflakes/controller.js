@@ -1,17 +1,22 @@
 'use strict'
 const helpers = require('./helpers')
 
-// function to transform device input
+// compare function for sorting by PCI addresses
+function pciCompare(a, b) {
+  return a.pciAddress.localeCompare(b.pciAddress)
+}
+
+// function to transform snowflake input
 function processNewDevice(rawDeviceInput) {
 
-  // instantiate new device object
-  let device = {
+  // instantiate new snowflake object
+  let snowflake = {
     ...{raw: rawDeviceInput},
     ...rawDeviceInput
   }
 
   // instantiate a networks array 
-  device.networks = {}
+  snowflake.networks = {}
 
   // iterate through network objects from input
   rawDeviceInput.networks.forEach((network)=>{
@@ -29,7 +34,7 @@ function processNewDevice(rawDeviceInput) {
     let pciBusTestResults = pciBusRegex.exec(network.businfo)
     let usbBusTestResults = usbBusRegex.test(network.businfo)
 
-    // process network device
+    // process network snowflake
     if (!pciBusTestResults && !usbBusTestResults) {
 
       // skip and log if businfo is not PCI or USB
@@ -38,54 +43,54 @@ function processNewDevice(rawDeviceInput) {
 
     } else if (pciBusTestResults) {
 
-      // got a PCI ethernet device
+      // got a PCI ethernet snowflake
       // create ethernet array if it doesn't exist
-      if (!device.networks.ethernet) {
-        device.networks.ethernet = []
+      if (!snowflake.networks.ethernet) {
+        snowflake.networks.ethernet = []
       }
       // set additional network object details
       outputNetwork.pciAddress = pciBusTestResults.groups.busId
       outputNetwork.product = network.product
       outputNetwork.vendor = network.vendor
-      device.networks.ethernet.push(outputNetwork)
+      snowflake.networks.ethernet.push(outputNetwork)
       
       return
 
     } else if (usbBusTestResults) {
       
-      // got a usb device
+      // got a usb snowflake
       // see if LTE
       if(network.configuration && network.configuration.driver == 'qmi_wwan') {
-        // got a LTE device
+        // got a LTE snowflake
         // create lte array if it doesn't exist
-        if (!device.networks.lte) {
-          device.networks.lte = []
+        if (!snowflake.networks.lte) {
+          snowflake.networks.lte = []
         }
         // set additional network object details
         outputNetwork.targetInterface = network.logicalname
         outputNetwork.product = network.product
         outputNetwork.vendor = network.vendor
-        device.networks.lte.push(outputNetwork)
+        snowflake.networks.lte.push(outputNetwork)
       }
     }
   })
 
   // sort networks by PCI addr
-  device.networks.ethernet.sort(helpers.pciCompare)
+  snowflake.networks.ethernet.sort(pciCompare)
 
-  // construct device key
-  device.key = `${device.baseboardManufacturer}_${device.baseboardProductName}_${device.baseboardSerialNumber}_${device.chassisManufacturer}_${device.chassisSerialNumber}_${device.systemManufacturer}_${device.systemProductName}_${device.systemSerialNumber}`
+  // construct snowflake key
+  snowflake.key = `${snowflake.baseboardManufacturer}_${snowflake.baseboardProductName}_${snowflake.baseboardSerialNumber}_${snowflake.chassisManufacturer}_${snowflake.chassisSerialNumber}_${snowflake.systemManufacturer}_${snowflake.systemProductName}_${snowflake.systemSerialNumber}`
 
-  return device
+  return snowflake
 }
 
 // export module
 module.exports = {
 	async getAll(req, res) {
 		try {
-      const devices = await helpers.getAll({})
+      const snowflakes = await helpers.getAll({})
 
-      return res.send(devices)
+      return res.send(snowflakes)
     } catch (error) {
       return res.status(400).send({
         status: 'failure'
@@ -99,8 +104,9 @@ module.exports = {
     try {
       await helpers.addNew(processNewDevice(req.body));
 
-      return res.send('Device info received.')
-
+      return res.send({
+        status: 'success'
+      })
     } catch (error) {
 
       return res.status(400).send({

@@ -13,39 +13,34 @@ UPLOADED="$CACHE_DIR/uploaded"
 # create cache dir if it doesn't exist
 mkdir -p $CACHE_DIR
 
-# check if system scan already cached
-if test -f "$CACHE_FILE"; then
-    echo "Skipping system scan, reading scan from cache: $CACHE_FILE"
-    exit 0
-fi
+function scan(){
+  # populate variables
+  BIOS_VENDOR=$(dmidecode -s bios-vendor)
+  BIOS_VERSION=$(dmidecode -s bios-version)
+  BIOS_RELEASE_DATE=$(dmidecode -s bios-release-date)
+  SYSTEM_MANUFACTURER=$(dmidecode -s system-manufacturer)
+  SYSTEM_PRODUCT_NAME=$(dmidecode -s system-product-name)
+  SYSTEM_VERSION=$(dmidecode -s system-version)
+  SYSTEM_SERIAL_NUMBER=$(dmidecode -s system-serial-number)
+  BASEBOARD_MANUFACTURER=$(dmidecode -s baseboard-manufacturer)
+  BASEBOARD_PRODUCT_NAME=$(dmidecode -s baseboard-product-name)
+  BASEBOARD_VERSION=$(dmidecode -s baseboard-version)
+  BASEBOARD_SERIAL_NUMBER=$(dmidecode -s baseboard-serial-number)
+  CHASSIS_MANUFACTURER=$(dmidecode -s chassis-manufacturer)
+  CHASSIS_TYPE=$(dmidecode -s chassis-type)
+  CHASSIS_VERSION=$(dmidecode -s chassis-version)
+  CHASSIS_SERIAL_NUMBER=$(dmidecode -s chassis-serial-number)
+  PROCESSOR_FAMILY=$(dmidecode -s processor-family)
+  PROCESSOR_MANUFACTURER=$(dmidecode -s processor-manufacturer)
+  PROCESSOR_VERSION=$(dmidecode -s processor-version)
+  PROCESSOR_FREQUENCY=$(dmidecode -s processor-frequency)
 
-# populate variables
-BIOS_VENDOR=$(dmidecode -s bios-vendor)
-BIOS_VERSION=$(dmidecode -s bios-version)
-BIOS_RELEASE_DATE=$(dmidecode -s bios-release-date)
-SYSTEM_MANUFACTURER=$(dmidecode -s system-manufacturer)
-SYSTEM_PRODUCT_NAME=$(dmidecode -s system-product-name)
-SYSTEM_VERSION=$(dmidecode -s system-version)
-SYSTEM_SERIAL_NUMBER=$(dmidecode -s system-serial-number)
-BASEBOARD_MANUFACTURER=$(dmidecode -s baseboard-manufacturer)
-BASEBOARD_PRODUCT_NAME=$(dmidecode -s baseboard-product-name)
-BASEBOARD_VERSION=$(dmidecode -s baseboard-version)
-BASEBOARD_SERIAL_NUMBER=$(dmidecode -s baseboard-serial-number)
-CHASSIS_MANUFACTURER=$(dmidecode -s chassis-manufacturer)
-CHASSIS_TYPE=$(dmidecode -s chassis-type)
-CHASSIS_VERSION=$(dmidecode -s chassis-version)
-CHASSIS_SERIAL_NUMBER=$(dmidecode -s chassis-serial-number)
-PROCESSOR_FAMILY=$(dmidecode -s processor-family)
-PROCESSOR_MANUFACTURER=$(dmidecode -s processor-manufacturer)
-PROCESSOR_VERSION=$(dmidecode -s processor-version)
-PROCESSOR_FREQUENCY=$(dmidecode -s processor-frequency)
+  # populate network details
+  # pipe through sed to work around lshw bug https://github.com/lyonel/lshw/pull/28 
+  NET_MAP=$(lshw -quiet -c network -json | sed 's/^\s*}\s*{\s*$/},{/')
 
-# populate network details
-# pipe through sed to work around lshw bug https://github.com/lyonel/lshw/pull/28 
-NET_MAP=$(lshw -quiet -c network -json | sed 's/^\s*}\s*{\s*$/},{/')
-
-# construct JSON string
-JSON_STRING=$(cat << EOF
+  # construct JSON string
+  JSON_STRING=$(cat << EOF
 {
   "biosVendor":"$BIOS_VENDOR",
   "biosVersion":"$BIOS_VERSION",
@@ -73,4 +68,27 @@ JSON_STRING=$(cat << EOF
 EOF
 )
 
-echo $JSON_STRING | python -m json.tool > $CACHE_FILE
+  echo $JSON_STRING | python -m json.tool > $CACHE_FILE
+
+}
+
+
+
+# check if system scan already cached
+if [ -f $CACHE_FILE ]; then
+    echo "Skipping system scan, reading scan from cache: $CACHE_FILE"
+else
+  scan
+fi
+
+if [ -f $UPLOADED ];then
+    echo "Skipping upload, sysinfo already uploaded."
+else
+    curl -L -s --request POST -H "Content-Type: application/json" --data @$CACHE_FILE http://$1/api/devices
+    if [ $? -eq 0 ]; then
+      touch $UPLOADED
+      echo ""
+    else
+      echo "Could not upload sysinfo."
+    fi
+fi
