@@ -15,11 +15,20 @@ module.exports = {
   // add new device to DB
   async addNew(device) {
     // dup check
-    let existingDevice = await Devices.find({ key: device.key })
+    let existingDevice = await Devices.find({ 
+      baseboardManufacturer: device.baseboardManufacturer, 
+      baseboardProductName: device.baseboardProductName, 
+      baseboardSerialNumber: device.baseboardSerialNumber,
+      chassisManufacturer: device.chassisManufacturer,
+      chassisSerialNumber: device.chassisSerialNumber,
+      systemManufacturer: device.systemManufacturer,
+      systemProductName: device.systemProductName,
+      systemSerialNumber: device.systemSerialNumber
+     })
+
     if (Array.isArray(existingDevice) && existingDevice.length > 0) {
       // already in DB
-      console.log(`device key already exists: '${device.key}'`)
-      //throw `device key already exists: '${device.key}'`
+      console.log(`device already exists: '${device.baseboardManufacturer} ${device.baseboardProductName} ${device.baseboardSerialNumber}'`)
       return
     } else {
       // create new device in DB
@@ -102,9 +111,6 @@ module.exports = {
     device.networks.ethernet.sort((a, b) => {
       return a.pciAddress.localeCompare(b.pciAddress)
     })
-
-    // construct device key
-    device.key = `${device.baseboardManufacturer}_${device.baseboardProductName}_${device.baseboardSerialNumber}_${device.chassisManufacturer}_${device.chassisSerialNumber}_${device.systemManufacturer}_${device.systemProductName}_${device.systemSerialNumber}`
 
     return device
   }
