@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    links:
+      - api
+
+  api:
+    container_name: api
+    build:
+      context: ./app
+    volumes:
+      - ./app:/usr/src/app
+    links:
+      - db
+    environment:
+      - dev=1
+      - db_service_name=db
+      - db_name=db
+      - db_retry_time=3000
+
+  db:
+    container_name: db
+    image: mongo
+    volumes:
+      - ./db:/data/db
