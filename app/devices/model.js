@@ -5,10 +5,6 @@ const Schema = mongoose.Schema
 
 const DevicesSchema = new Schema({
 	date: { type: Date, default: Date.now },
-	key : {
-		type: String,
-		required: true
-	},
 	baseboardManufacturer: {
 		type: String,
 		required: true
@@ -82,6 +78,10 @@ const DevicesSchema = new Schema({
 		required: true
 	},
 	systemVersion: {
+		type: String,
+		required: true
+	},
+	snowflake: {
 		type: String,
 		required: true
 	},

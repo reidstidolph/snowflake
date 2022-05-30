@@ -91,14 +91,15 @@ else
 fi
 
 if [ -f $UPLOADED ];then
-    echo "Skipping upload, sysinfo already uploaded."
+  echo "Skipping upload, sysinfo already uploaded."
 else
-    STATUSCODE=$(curl -L -s --request POST --write-out "%{http_code}" --output /dev/stderr -H "Content-Type: application/json" --data @$CACHE_FILE http://${scriptHost}/api/devices)
-    if [ $? -eq 0 ] || [ $STATUSCODE -eq 200 ]; then
-      touch $UPLOADED
-      echo ""
-    else
-      echo "Could not upload sysinfo."
-    fi
+  STATUSCODE=$(curl -L -s --request POST --write-out "%{http_code}" --output /dev/stderr -H "Content-Type: application/json" --data @$CACHE_FILE http://${scriptHost}/api/devices)
+  if [ $? -eq 0 ] && [ $STATUSCODE -eq 200 ]; then
+    touch $UPLOADED
+    echo ""
+  else
+    echo ""
+    echo "Could not upload sysinfo."
+  fi
 fi
 `

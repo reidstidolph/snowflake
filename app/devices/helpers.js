@@ -4,6 +4,7 @@ require('./model')
 
 const mongoose = require('mongoose')
 const Devices = mongoose.model('Devices')
+const Snowflakes = mongoose.model('Snowflakes')
 
 module.exports = {
 
@@ -27,13 +28,33 @@ module.exports = {
      })
 
     if (Array.isArray(existingDevice) && existingDevice.length > 0) {
-      // already in DB
+      // already in DB, return
       console.log(`device already exists: '${device.baseboardManufacturer} ${device.baseboardProductName} ${device.baseboardSerialNumber}'`)
       return
-    } else {
-      // create new device in DB
-      return await new Devices(device).save()
     }
+
+    // find device snowflake
+    let snowflake = {
+      baseboardManufacturer: device.baseboardManufacturer, 
+      baseboardProductName: device.baseboardProductName,
+      systemManufacturer: device.systemManufacturer,
+      systemProductName: device.systemProductName,
+      networks: device.networks
+    }
+    
+    let existingSnowflake = await Snowflakes.findOne(snowflake)
+
+    if (existingSnowflake && existingSnowflake['_id']) {
+      // matches existing snowflake
+      device.snowflake = existingSnowflake['_id']
+    } else {
+      // add new snowflake
+      let newSnowflake = await new Snowflakes(snowflake).save()
+      device.snowflake = newSnowflake['_id']
+    }
+
+    // create new device in DB
+    return await new Devices(device).save()
   },
 
   // function to transform device input

@@ -30,7 +30,7 @@ module.exports = {
       return res.send('Device info received.')
 
     } catch (error) {
-
+      console.log(error)
       return res.status(400).send({
         status: 'failure'
       })
