@@ -35,10 +35,10 @@ module.exports = {
 
     // find device snowflake
     let snowflake = {
-      baseboardManufacturer: device.baseboardManufacturer || "unknown", 
-      baseboardProductName: device.baseboardProductName || "unknown",
-      systemManufacturer: device.systemManufacturer || "unknown",
-      systemProductName: device.systemProductName || "unknown",
+      baseboardManufacturer: device.baseboardManufacturer, 
+      baseboardProductName: device.baseboardProductName,
+      systemManufacturer: device.systemManufacturer,
+      systemProductName: device.systemProductName,
       networks: device.networks
     }
     
@@ -64,6 +64,11 @@ module.exports = {
     let device = {
       ...{raw: rawDeviceInput},
       ...rawDeviceInput
+    }
+
+    // throw out any QEMU VMs
+    if (device.baseboardManufacturer == "QEMU" || device.systemManufacturer == "QEMU" || device.chassisManufacturer == "QEMU") {
+      console.log(`INFO: Discarding QEMU VM.`)
     }
 
     // clear the networks for re-write
