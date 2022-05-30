@@ -9,6 +9,8 @@ services:
       - "80:80"
     links:
       - api
+    volumes:
+      - ./frontend/static:/srv
 
   api:
     container_name: api

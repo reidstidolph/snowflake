@@ -1,6 +1,467 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <h1>Hello from Snowflake!</h1>
-    </body>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+    
+    .v-application {
+      font-family: 'Lato', sans-serif !important;
+    };
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <style>
+    td,th {
+      padding-left: 2px;
+      padding-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <!--
+        Top app bar
+      -->
+      <v-app-bar elevation="4" app dark class="light-green">
+        <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+        <v-toolbar-title>Snowflake</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <div>
+          <v-text-field
+          v-model="search"
+          hide-details
+          prepend-icon="mdi-magnify"
+          single-line
+          ></v-text-field>
+        </div>
+      </v-app-bar>
+      
+      <!--
+        Device details dialog
+      -->
+      <v-dialog v-model="deviceSelected" width="80%">
+        <v-card>
+          <v-app-bar dense dark class="light-green">
+            <v-btn icon @click="resetSelectedDevice()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-app-bar-title>Device Details</v-app-bar-title>
+          </v-app-bar>
+          <v-card>
+            <v-card-text>
+              <h2>DMI Info</h2>
+              <table>
+                <tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="3" style="vertical-align:top;text-align:left;"><h3>Baseboard</h3></th>
+                  <td><h4>Vendor:<h4></td>
+                  <td>{{selectedDevice.baseboardManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Model:<h4></td>
+                  <td>{{selectedDevice.baseboardProductName}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Serial:<h4></td>
+                  <td>{{selectedDevice.baseboardSerialNumber}}</td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="3" style="vertical-align:top;text-align:left;"><h3>System</h3></th>
+                  <td><h4>Vendor:<h4></td>
+                  <td>{{selectedDevice.systemManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Model:<h4></td>
+                  <td>{{selectedDevice.systemProductName}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Serial:<h4></td>
+                  <td>{{selectedDevice.systemSerialNumber}}</td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="3" style="vertical-align:top;text-align:left;"><h3>Bios</h3></th>
+                  <td><h4>Vendor:<h4></td>
+                  <td>{{selectedDevice.biosVendor}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Version:<h4></td>
+                  <td>{{selectedDevice.biosVersion}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Release Date:<h4></td>
+                  <td>{{selectedDevice.biosReleaseDate}}</td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="4" style="vertical-align:top;text-align:left;"><h3>CPU</h3></th>
+                  <td><h4>Vendor:<h4></td>
+                  <td>{{selectedDevice.processorManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Family:<h4></td>
+                  <td>{{selectedDevice.processorFamily}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Version:<h4></td>
+                  <td>{{selectedDevice.processorVersion}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Frequency:<h4></td>
+                  <td>{{selectedDevice.processorFrequency}}</td>
+                </tr>
+              </table>
+              <br>
+              <div>
+                <h2>Ethernet Ports</h2>
+                <v-divider></v-divider>
+                <v-data-table :items="selectedDevice.networks.ethernet" :hide-default-footer="true" dense calculate-widths>
+                  <template v-slot:item="{ item }">
+                    <tr>
+                      <td>
+                        {{item.pciAddress}}
+                      </td>
+                      <td>
+                        {{item.vendor}}
+                      </td>
+                      <td>
+                        {{item.product}}
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </div>
+              <br>
+              <div v-if="selectedDevice.networks.lte && selectedDevice.networks.lte.length > 0">
+                <h2>LTE Ports</h2>
+                <v-divider></v-divider>
+                <v-data-table :items="selectedDevice.networks.lte" :hide-default-footer="true" dense>
+                  <template v-slot:item="{ item }">
+                    <tr>
+                      <td>
+                        {{item.targetInterface}}
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </div>
+              <br>
+              <h2>Raw Device Data</h2>
+              <v-divider></v-divider>
+              <br>
+              <v-card dark>
+                <v-snackbar v-model="textCopied" :timeout="timeout" top right><i class="material-icons">check_circle</i>Config copied to clipboard!</v-snackbar>
+                <v-btn fab right top class="light-green" absolute class="white--text" data-clipboard-action="copy" data-clipboard-target="#configText"><i class="material-icons">file_copy</i></v-btn>
+                <v-container style="overflow-x:auto; white-space: nowrap;">
+                  <pre id="configText">{{JSON.stringify(selectedDevice.raw,null,2)}}</pre>
+                </v-container>
+              </v-card>
+            </v-card-text>
+          </v-card>
+        </v-card>
+      </v-dialog>
+
+      <!--
+        Main panel
+      -->
+      <v-main>
+        <!--
+          Side bar
+        -->
+        <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        temporary
+        >
+          <v-list dense>
+
+            <v-list-item link @click='selectedMenu = "home"'>
+              <v-list-item-icon>
+                <v-icon>home</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Home</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item link @click='selectedMenu = "snowflakes"'>
+              <v-list-item-icon>
+                <v-icon>mdi-snowflake</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Snowflakes</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item link @click='selectedMenu = "devices"'>
+              <v-list-item-icon>
+                <v-icon>mdi-server</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Devices</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+          </v-list>
+        </v-navigation-drawer>
+
+        <!--
+          Home
+        -->
+        <v-container v-if='selectedMenu==="home"'>
+          <v-card>
+            <v-card-title>
+              Welcome To the Snowflake Device Survey
+            </v-card-title>
+            <v-card-text>
+              Devices: {{devices.length}}
+              
+              Snowflakes found: {{snowflakes.length}}
+            </v-card-text>
+          </v-card>
+        </v-container>
+
+        <!--
+          Snowflakes
+        -->
+        <v-container v-if='selectedMenu==="snowflakes"'>
+          snowflakes
+        </v-container>
+
+        <!--
+          Devices
+        -->
+        <v-container fluid v-if='selectedMenu==="devices"'>
+          <div>
+            <v-data-table
+            :headers="headers"
+            :items="devices"
+            :items-per-page="25"
+            :search="search"
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            mobile-breakpoint="0"
+            :footer-props="{
+              showFirstLastPage: true,
+              'items-per-page-text':'Devices per page',
+              'items-per-page-options': [10,25,50]
+            }"
+            dense
+            >
+              <template v-slot:item="{ item }">
+                <tr>
+                  <td>{{item.baseboardManufacturer}}</td>
+                  <td>{{item.baseboardProductName}}</td>
+                  <td>{{item.baseboardSerialNumber}}</td>
+                  <td>{{item.baseboardVersion}}</td>
+                  <td>{{item.systemManufacturer}}</td>
+                  <td>{{item.systemProductName}}</td>
+                  <td>{{item.systemSerialNumber}}</td>
+                  <td>{{item.systemVersion}}</td>
+                  <td>
+                    <v-btn x-small @click="deviceDetails(item)">Details</v-btn>
+                  </td>
+                </tr>
+              </template>         
+            </v-data-table>
+          </div>  
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+</body>
+<script>
+  
+  var clipboard = new ClipboardJS('.v-btn')
+  
+  const model = {
+    "loading": true,
+    "drawer": false,
+    "search": '',
+    "selectedMenu": "home",
+    "headers": [
+    {
+      text: "Baseboard Vendor",
+      value: "baseboardManufacturer"
+    },
+    {
+      text: "Baseboard Model",
+      value: "baseboardProductName"
+    },
+    {
+      text: "Baseboard Serial"
+    },
+    {
+      text: "Baseboard Version",
+      value: "baseboardVersion"
+    },
+    {
+      text: "System Manufacturer",
+      value: "systemManufacturer"
+    },
+    {
+      text: "System Model",
+      value: "systemProductName"
+    },
+    {
+      text: "System Serial"
+    },
+    {
+      text: "System Version",
+      value: "systemVersion"
+    }
+    ],
+    "devices": [],
+    "snowflakes": [],
+    "selectedDevice": {
+      baseboardManufacturer: "",
+      baseboardProductName: "",
+      baseboardSerialNumber: "",
+      baseboardVersion: "",
+      biosReleaseDate: "",
+      biosVendor: "",
+      biosVersion: "",
+      chassisManufacturer: "",
+      chassisSerialNumber: "",
+      chassisType: "",
+      chassisVersion: "",
+      processorFamily: "",
+      processorFrequency: "",
+      processorManufacturer: "",
+      processorVersion: "",
+      systemManufacturer: "",
+      systemProductName: "",
+      systemSerialNumber: "",
+      systemVersion: "",
+      snowflake: "",
+      networks: {
+        ethernet: [],
+        lte: []
+      },
+      raw: {}
+    },
+    "deviceSelected": false,
+    "textCopied": false,
+    "timeout": 4000,
+  }
+  
+  new Vue({
+    el: '#app',
+    vuetify: new Vuetify({
+      theme: {
+        dark: false,
+        themes: {
+          light: {
+            primary: '#84B135',
+            secondary: '#0096A4',
+            background: '#84B135'
+          },
+          dark: {
+            primary: '#84B135',
+            secondary: '#0096A4',
+            background: '#84B135'
+          }
+        }
+      }
+    }),
+    data: model,
+    methods: {
+      fetchData(){
+        let snowflakesLoaded = false
+        let devicesLoaded = false
+
+        const devicePromise = fetch('api/devices')
+        .then(response => {
+          console.log('got device data')
+          response.json().then(data => {
+            this.devices = data
+          })
+          devicesLoaded=true
+          if (snowflakesLoaded && devicesLoaded) {
+            this.loading = false
+          }
+        })
+
+        const snowflakePromise = fetch('api/snowflakes')
+        .then(response => {
+          console.log('got snowflake data')
+          response.json().then(data => {
+            this.snowflakes = data
+          })
+          snowflakesLoaded=true
+          if (snowflakesLoaded && devicesLoaded) {
+            this.loading = false
+          }
+        })
+      },
+      resetSelectedDevice(){
+        this.deviceSelected = false
+        this.selectedDevice ={
+          baseboardManufacturer: "",
+          baseboardProductName: "",
+          baseboardSerialNumber: "",
+          baseboardVersion: "",
+          biosReleaseDate: "",
+          biosVendor: "",
+          biosVersion: "",
+          chassisManufacturer: "",
+          chassisSerialNumber: "",
+          chassisType: "",
+          chassisVersion: "",
+          processorFamily: "",
+          processorFrequency: "",
+          processorManufacturer: "",
+          processorVersion: "",
+          systemManufacturer: "",
+          systemProductName: "",
+          systemSerialNumber: "",
+          systemVersion: "",
+          snowflake: "",
+          networks: {
+            ethernet: [],
+            lte: []
+          },
+          raw: {}
+        } 
+      },
+      deviceDetails(device){
+        this.deviceSelected = true
+        this.selectedDevice = device
+        console.log(this.selectedDevice)
+      }
+    },
+    created() {
+      this.fetchData();
+    }
+  })
+  
+  clipboard.on('success', ()=> {
+    console.log('text copied.')
+    model.textCopied = true
+  })
+</script>
 </html>
