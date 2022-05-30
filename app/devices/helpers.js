@@ -35,10 +35,10 @@ module.exports = {
 
     // find device snowflake
     let snowflake = {
-      baseboardManufacturer: device.baseboardManufacturer, 
-      baseboardProductName: device.baseboardProductName,
-      systemManufacturer: device.systemManufacturer,
-      systemProductName: device.systemProductName,
+      baseboardManufacturer: device.baseboardManufacturer || "unknown", 
+      baseboardProductName: device.baseboardProductName || "unknown",
+      systemManufacturer: device.systemManufacturer || "unknown",
+      systemProductName: device.systemProductName || "unknown",
       networks: device.networks
     }
     
@@ -73,7 +73,7 @@ module.exports = {
     rawDeviceInput.networks.forEach((network)=>{
 
       // regex for extracting PCI and USB bus numbers
-      const pciBusRegex = /(?<busId>\d{4}:\d{2}:\d{2}\.\d)/
+      const pciBusRegex = /(?<busId>(\d|[a-f]){4}:(\d|[a-f]){2}:(\d|[a-f]){2}\.(\d|[a-f]))/
       const usbBusRegex = /usb@\d+:\d+/
 
       // skip if no pci bus info
