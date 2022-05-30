@@ -69,7 +69,7 @@ module.exports = {
     // throw out any QEMU VMs
     if (device.baseboardManufacturer == "QEMU" || device.systemManufacturer == "QEMU" || device.chassisManufacturer == "QEMU") {
       console.log(`INFO: Discarding QEMU VM.`)
-      return
+      return null
     }
 
     // clear the networks for re-write

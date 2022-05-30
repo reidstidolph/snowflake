@@ -26,7 +26,9 @@ module.exports = {
       // process and transform device info
       let transformedDevice = helpers.processNewDevice(req.body)
       // add to DB
-      await helpers.addNew(transformedDevice)
+      if (transformedDevice !== null) {
+        await helpers.addNew(transformedDevice)
+      }
       return res.send('Device info received.')
 
     } catch (error) {
