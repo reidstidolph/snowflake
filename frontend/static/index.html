@@ -353,6 +353,7 @@
             >
               <template v-slot:item="{ item }">
                 <tr>
+                  <td>{{item.id}}</td>
                   <td>{{item.baseboardManufacturer}}</td>
                   <td>{{item.baseboardProductName}}</td>
                   <td>{{item.systemManufacturer}}</td>
@@ -397,6 +398,7 @@
                   <td>{{item.systemProductName}}</td>
                   <td>{{item.systemSerialNumber}}</td>
                   <td>{{item.systemVersion}}</td>
+                  <td>{{item.snowflake}}</td>
                   <td>
                     <v-btn x-small @click="deviceDetails(item)">Details</v-btn>
                   </td>
@@ -450,6 +452,10 @@
         value: "systemVersion"
       },
       {
+        text: "Snowflake",
+        value: "snowflake"
+      },
+      {
         text: ""
       }
     ],
@@ -483,6 +489,10 @@
     },
     "deviceSelected": false,
     "snowflakeHeaders": [
+      {
+        text: "ID",
+        value: "id"
+      },
       {
         text: "Baseboard Vendor",
         value: "baseboardManufacturer"
