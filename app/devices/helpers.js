@@ -38,7 +38,7 @@ module.exports = {
       device.baseboardManufacturer && device.baseboardManufacturer.length > 0 &&
       device.baseboardProductName && device.baseboardProductName.length > 0 &&
       device.systemManufacturer && device.systemManufacturer.length > 0 &&
-      device.systemProductName && device.systemProductName > 0
+      device.systemProductName && device.systemProductName.length > 0
     ) {
       // find device snowflake
       let snowflake = {
