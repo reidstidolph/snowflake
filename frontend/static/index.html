@@ -186,6 +186,92 @@
       </v-dialog>
 
       <!--
+        Snowflake details dialog
+      -->
+      <v-dialog v-model="snowflakeSelected" width="80%">
+        <v-card>
+          <v-app-bar dense dark class="light-green">
+            <v-btn icon @click="resetSelectedSnowflake()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-app-bar-title>Snowflake Details</v-app-bar-title>
+          </v-app-bar>
+          <v-card>
+            <v-card-text>
+              <h2>DMI Info</h2>
+              <table>
+                <tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="2" style="vertical-align:top;text-align:left;"><h3>Baseboard</h3></th>
+                  <td><h4>Vendor:<h4></td>
+                  <td>{{selectedSnowflake.baseboardManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Model:<h4></td>
+                  <td>{{selectedSnowflake.baseboardProductName}}</td>
+                </tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="2" style="vertical-align:top;text-align:left;"><h3>System</h3></th>
+                  <td><h4>Vendor:<h4></td>
+                  <td>{{selectedSnowflake.systemManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td><h4>Model:<h4></td>
+                  <td>{{selectedSnowflake.systemProductName}}</td>
+                </tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+              </table>
+              <br>
+              <div>
+                <h2>Ethernet Ports</h2>
+                <v-divider></v-divider>
+                <v-data-table :items="selectedSnowflake.networks.ethernet" :hide-default-footer="true" dense calculate-widths>
+                  <template v-slot:item="{ item }">
+                    <tr>
+                      <td>
+                        {{item.pciAddress}}
+                      </td>
+                      <td>
+                        {{item.vendor}}
+                      </td>
+                      <td>
+                        {{item.product}}
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </div>
+              <br>
+              <div v-if="selectedSnowflake.networks.lte && selectedSnowflake.networks.lte.length > 0">
+                <h2>LTE Ports</h2>
+                <v-divider></v-divider>
+                <v-data-table :items="selectedSnowflake.networks.lte" :hide-default-footer="true" dense>
+                  <template v-slot:item="{ item }">
+                    <tr>
+                      <td>
+                        {{item.targetInterface}}
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-card>
+      </v-dialog>
+
+      <!--
         Main panel
       -->
       <v-main>
@@ -239,7 +325,7 @@
             </v-card-title>
             <v-card-text>
               Devices: {{devices.length}}
-              
+
               Snowflakes found: {{snowflakes.length}}
             </v-card-text>
           </v-card>
@@ -248,8 +334,37 @@
         <!--
           Snowflakes
         -->
-        <v-container v-if='selectedMenu==="snowflakes"'>
-          snowflakes
+        <v-container fluid v-if='selectedMenu==="snowflakes"'>
+          <div>
+            <v-data-table
+            :headers="snowflakeHeaders"
+            :items="snowflakes"
+            :items-per-page="25"
+            :search="search"
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            mobile-breakpoint="0"
+            :footer-props="{
+              showFirstLastPage: true,
+              'items-per-page-text':'Devices per page',
+              'items-per-page-options': [10,25,50]
+            }"
+            dense
+            >
+              <template v-slot:item="{ item }">
+                <tr>
+                  <td>{{item.baseboardManufacturer}}</td>
+                  <td>{{item.baseboardProductName}}</td>
+                  <td>{{item.systemManufacturer}}</td>
+                  <td>{{item.systemProductName}}</td>
+                  <td>{{devicesBySnowflake(item.id).length}}</td>
+                  <td>
+                    <v-btn x-small @click="snowflakeDetails(item)">Details</v-btn>
+                  </td>
+                </tr>
+              </template>         
+            </v-data-table>
+          </div> 
         </v-container>
 
         <!--
@@ -258,7 +373,7 @@
         <v-container fluid v-if='selectedMenu==="devices"'>
           <div>
             <v-data-table
-            :headers="headers"
+            :headers="deviceHeaders"
             :items="devices"
             :items-per-page="25"
             :search="search"
@@ -303,40 +418,42 @@
     "drawer": false,
     "search": '',
     "selectedMenu": "home",
-    "headers": [
-    {
-      text: "Baseboard Vendor",
-      value: "baseboardManufacturer"
-    },
-    {
-      text: "Baseboard Model",
-      value: "baseboardProductName"
-    },
-    {
-      text: "Baseboard Serial"
-    },
-    {
-      text: "Baseboard Version",
-      value: "baseboardVersion"
-    },
-    {
-      text: "System Manufacturer",
-      value: "systemManufacturer"
-    },
-    {
-      text: "System Model",
-      value: "systemProductName"
-    },
-    {
-      text: "System Serial"
-    },
-    {
-      text: "System Version",
-      value: "systemVersion"
-    }
+    "deviceHeaders": [
+      {
+        text: "Baseboard Vendor",
+        value: "baseboardManufacturer"
+      },
+      {
+        text: "Baseboard Model",
+        value: "baseboardProductName"
+      },
+      {
+        text: "Baseboard Serial"
+      },
+      {
+        text: "Baseboard Version",
+        value: "baseboardVersion"
+      },
+      {
+        text: "System Manufacturer",
+        value: "systemManufacturer"
+      },
+      {
+        text: "System Model",
+        value: "systemProductName"
+      },
+      {
+        text: "System Serial"
+      },
+      {
+        text: "System Version",
+        value: "systemVersion"
+      },
+      {
+        text: ""
+      }
     ],
     "devices": [],
-    "snowflakes": [],
     "selectedDevice": {
       baseboardManufacturer: "",
       baseboardProductName: "",
@@ -365,6 +482,42 @@
       raw: {}
     },
     "deviceSelected": false,
+    "snowflakeHeaders": [
+      {
+        text: "Baseboard Vendor",
+        value: "baseboardManufacturer"
+      },
+      {
+        text: "Baseboard Model",
+        value: "baseboardProductName"
+      },
+      {
+        text: "System Manufacturer",
+        value: "systemManufacturer"
+      },
+      {
+        text: "System Model",
+        value: "systemProductName"
+      },
+      {
+        text: "Devices Matching"
+      },
+      {
+        text: ""
+      }
+    ],
+    "snowflakes": [],
+    "selectedSnowflake": {
+      baseboardManufacturer: "",
+      baseboardProductName: "",
+      systemManufacturer: "",
+      systemProductName: "",
+      networks: {
+        ethernet: [],
+        lte: []
+      }
+    },
+    "snowflakeSelected": false,
     "textCopied": false,
     "timeout": 4000,
   }
@@ -451,7 +604,29 @@
       deviceDetails(device){
         this.deviceSelected = true
         this.selectedDevice = device
-        console.log(this.selectedDevice)
+      },
+      snowflakeDetails(snowflake){
+        this.snowflakeSelected = true
+        this.selectedSnowflake = snowflake
+      },
+      resetSelectedSnowflake(){
+        this.snowflakeSelected = false
+        this.selectedSnowflake = {
+          baseboardManufacturer: "",
+          baseboardProductName: "",
+          systemManufacturer: "",
+          systemProductName: "",
+          networks: {
+            ethernet: [],
+            lte: []
+          }
+        }
+      },
+      devicesBySnowflake(snowflakeId){
+        let output = this.devices.filter((device)=>{
+          return device.snowflake === snowflakeId
+        })
+        return output
       }
     },
     created() {

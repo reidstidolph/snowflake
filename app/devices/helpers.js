@@ -90,6 +90,21 @@ module.exports = {
       return null
     }
 
+    // throw out any Amazon EC2 VMs
+    if (device.baseboardManufacturer == "Amazon EC2" || device.systemManufacturer == "Amazon EC2") {
+      console.log(`INFO: Discarding Amazon EC2 VM.`)
+      return null
+    }
+
+    // throw out any Azure VMs
+    if (
+      (device.baseboardManufacturer == "Microsoft Corporation" && device.baseboardProductName == "Virtual Machine") || 
+      (device.systemManufacturer == "Microsoft Corporation" && device.systemProductName == "Virtual Machine")
+    ) {
+      console.log(`INFO: Discarding Azure VM.`)
+      return null
+    }
+
     // clear the networks for re-write
     device.networks = {}
 
