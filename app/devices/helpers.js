@@ -33,24 +33,36 @@ module.exports = {
       return
     }
 
-    // find device snowflake
-    let snowflake = {
-      baseboardManufacturer: device.baseboardManufacturer, 
-      baseboardProductName: device.baseboardProductName,
-      systemManufacturer: device.systemManufacturer,
-      systemProductName: device.systemProductName,
-      networks: device.networks
-    }
-    
-    let existingSnowflake = await Snowflakes.findOne(snowflake)
+    // only look for snowflake if device has fully populated info
+    if (
+      device.baseboardManufacturer && device.baseboardManufacturer.length > 0 &&
+      device.baseboardProductName && device.baseboardProductName.length > 0 &&
+      device.systemManufacturer && device.systemManufacturer.length > 0 &&
+      device.systemProductName && device.systemProductName > 0
+    ) {
+      // find device snowflake
+      let snowflake = {
+        baseboardManufacturer: device.baseboardManufacturer, 
+        baseboardProductName: device.baseboardProductName,
+        systemManufacturer: device.systemManufacturer,
+        systemProductName: device.systemProductName,
+        networks: device.networks
+      }
+      
+      let existingSnowflake = await Snowflakes.findOne(snowflake)
 
-    if (existingSnowflake && existingSnowflake['_id']) {
-      // matches existing snowflake
-      device.snowflake = existingSnowflake['_id']
+      if (existingSnowflake && existingSnowflake['_id']) {
+        // matches existing snowflake
+        device.snowflake = existingSnowflake['_id']
+      } else {
+        // add new snowflake
+        let newSnowflake = await new Snowflakes(snowflake).save()
+        device.snowflake = newSnowflake['_id']
+      }
+
     } else {
-      // add new snowflake
-      let newSnowflake = await new Snowflakes(snowflake).save()
-      device.snowflake = newSnowflake['_id']
+      console.log(`INFO: Device received with insufficient info, skipping snowflake lookup.`)
+      device.snowflake = "N/A"
     }
 
     // create new device in DB
@@ -68,6 +80,12 @@ module.exports = {
 
     // throw out any QEMU VMs
     if (device.baseboardManufacturer == "QEMU" || device.systemManufacturer == "QEMU" || device.chassisManufacturer == "QEMU") {
+      console.log(`INFO: Discarding QEMU VM.`)
+      return null
+    }
+
+    // throw out any Xen VMs
+    if (device.baseboardManufacturer == "Xen" || device.systemManufacturer == "Xen" || device.chassisManufacturer == "Xen") {
       console.log(`INFO: Discarding QEMU VM.`)
       return null
     }
