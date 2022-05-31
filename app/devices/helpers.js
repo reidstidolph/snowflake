@@ -135,9 +135,11 @@ module.exports = {
     })
 
     // sort networks by PCI addr
-    device.networks.ethernet.sort((a, b) => {
-      return a.pciAddress.localeCompare(b.pciAddress)
-    })
+    if (device.networks.ethernet) {
+      device.networks.ethernet.sort((a, b) => {
+        return a.pciAddress.localeCompare(b.pciAddress)
+      })
+    }
 
     return device
   }
