@@ -25,6 +25,12 @@ const SnowflakesSchema = new Schema({
 		required: true,
 		set: setRaw,
 		get: getRaw
+	},
+	devicemap: {
+		type: String,
+		default: {},
+		set: setRaw,
+		get: getRaw
 	}
 },
 {toJSON: {getters: true, setters:true}})
