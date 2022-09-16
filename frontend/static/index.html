@@ -863,7 +863,7 @@
         this.snowflakeDevicemapSelected = true
         this.selectedSnowflake = snowflake
 
-        if (!snowflake.devicemap || snowflake.devicemap == {} || true) {
+        if (!snowflake.devicemap || snowflake.devicemap == {}) {
           console.log("overwriting devicemap")
           snowflake.devicemap = {}
           snowflake.devicemap.description = `${snowflake.systemManufacturer} ${snowflake.systemProductName}`
