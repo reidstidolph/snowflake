@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
@@ -7,22 +8,30 @@
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-    
+
     .v-application {
       font-family: 'Lato', sans-serif !important;
-    };
+    }
+
+    ;
   </style>
   <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <style>
-    td,th {
+    td,
+    th {
       padding-left: 2px;
       padding-right: 10px;
     }
+    .v-select__selections input {
+      width: 0 !important;
+      min-width: 0 !important;
+    }
   </style>
 </head>
+
 <body>
   <div id="app">
     <v-app>
@@ -34,15 +43,10 @@
         <v-toolbar-title>Snowflake</v-toolbar-title>
         <v-spacer></v-spacer>
         <div>
-          <v-text-field
-          v-model="search"
-          hide-details
-          prepend-icon="mdi-magnify"
-          single-line
-          ></v-text-field>
+          <v-text-field v-model="search" hide-details prepend-icon="mdi-magnify" single-line></v-text-field>
         </div>
       </v-app-bar>
-      
+
       <!--
         Device details dialog
       -->
@@ -64,16 +68,24 @@
                   </td>
                 </tr>
                 <tr>
-                  <th rowspan="3" style="vertical-align:top;text-align:left;"><h3>Baseboard</h3></th>
-                  <td><h4>Vendor:<h4></td>
+                  <th rowspan="3" style="vertical-align:top;text-align:left;">
+                    <h3>Baseboard</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
                   <td>{{selectedDevice.baseboardManufacturer}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Model:<h4></td>
+                  <td>
+                    <h4>Model:<h4>
+                  </td>
                   <td>{{selectedDevice.baseboardProductName}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Serial:<h4></td>
+                  <td>
+                    <h4>Serial:<h4>
+                  </td>
                   <td>{{selectedDevice.baseboardSerialNumber}}</td>
                 </tr>
                 <tr>
@@ -82,16 +94,24 @@
                   </td>
                 </tr>
                 <tr>
-                  <th rowspan="3" style="vertical-align:top;text-align:left;"><h3>System</h3></th>
-                  <td><h4>Vendor:<h4></td>
+                  <th rowspan="3" style="vertical-align:top;text-align:left;">
+                    <h3>System</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
                   <td>{{selectedDevice.systemManufacturer}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Model:<h4></td>
+                  <td>
+                    <h4>Model:<h4>
+                  </td>
                   <td>{{selectedDevice.systemProductName}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Serial:<h4></td>
+                  <td>
+                    <h4>Serial:<h4>
+                  </td>
                   <td>{{selectedDevice.systemSerialNumber}}</td>
                 </tr>
                 <tr>
@@ -100,16 +120,24 @@
                   </td>
                 </tr>
                 <tr>
-                  <th rowspan="3" style="vertical-align:top;text-align:left;"><h3>Bios</h3></th>
-                  <td><h4>Vendor:<h4></td>
+                  <th rowspan="3" style="vertical-align:top;text-align:left;">
+                    <h3>Bios</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
                   <td>{{selectedDevice.biosVendor}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Version:<h4></td>
+                  <td>
+                    <h4>Version:<h4>
+                  </td>
                   <td>{{selectedDevice.biosVersion}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Release Date:<h4></td>
+                  <td>
+                    <h4>Release Date:<h4>
+                  </td>
                   <td>{{selectedDevice.biosReleaseDate}}</td>
                 </tr>
                 <tr>
@@ -118,20 +146,30 @@
                   </td>
                 </tr>
                 <tr>
-                  <th rowspan="4" style="vertical-align:top;text-align:left;"><h3>CPU</h3></th>
-                  <td><h4>Vendor:<h4></td>
+                  <th rowspan="4" style="vertical-align:top;text-align:left;">
+                    <h3>CPU</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
                   <td>{{selectedDevice.processorManufacturer}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Family:<h4></td>
+                  <td>
+                    <h4>Family:<h4>
+                  </td>
                   <td>{{selectedDevice.processorFamily}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Version:<h4></td>
+                  <td>
+                    <h4>Version:<h4>
+                  </td>
                   <td>{{selectedDevice.processorVersion}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Frequency:<h4></td>
+                  <td>
+                    <h4>Frequency:<h4>
+                  </td>
                   <td>{{selectedDevice.processorFrequency}}</td>
                 </tr>
               </table>
@@ -139,7 +177,8 @@
               <div>
                 <h2>Ethernet Ports</h2>
                 <v-divider></v-divider>
-                <v-data-table :items="selectedDevice.networks.ethernet" :hide-default-footer="true" dense calculate-widths>
+                <v-data-table :items="selectedDevice.networks.ethernet" :hide-default-footer="true" dense
+                  calculate-widths>
                   <template v-slot:item="{ item }">
                     <tr>
                       <td>
@@ -174,8 +213,10 @@
               <v-divider></v-divider>
               <br>
               <v-card dark>
-                <v-snackbar v-model="textCopied" :timeout="timeout" top right><i class="material-icons">check_circle</i>Config copied to clipboard!</v-snackbar>
-                <v-btn fab right top class="light-green" absolute class="white--text" data-clipboard-action="copy" data-clipboard-target="#configText"><i class="material-icons">file_copy</i></v-btn>
+                <v-snackbar v-model="textCopied" :timeout="timeout" top right><i
+                    class="material-icons">check_circle</i>Config copied to clipboard!</v-snackbar>
+                <v-btn fab right top class="light-green" absolute class="white--text" data-clipboard-action="copy"
+                  data-clipboard-target="#configText"><i class="material-icons">file_copy</i></v-btn>
                 <v-container style="overflow-x:auto; white-space: nowrap;">
                   <pre id="configText">{{JSON.stringify(selectedDevice.raw,null,2)}}</pre>
                 </v-container>
@@ -206,37 +247,50 @@
                   </td>
                 </tr>
                 <tr>
-                  <th rowspan="2" style="vertical-align:top;text-align:left;"><h3>Baseboard</h3></th>
-                  <td><h4>Vendor:<h4></td>
+                  <th rowspan="2" style="vertical-align:top;text-align:left;">
+                    <h3>Baseboard</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
                   <td>{{selectedSnowflake.baseboardManufacturer}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Model:<h4></td>
+                  <td>
+                    <h4>Model:<h4>
+                  </td>
                   <td>{{selectedSnowflake.baseboardProductName}}</td>
                 </tr>
-                  <td colspan="3">
-                    <v-divider></v-divider>
-                  </td>
+                <td colspan="3">
+                  <v-divider></v-divider>
+                </td>
                 </tr>
                 <tr>
-                  <th rowspan="2" style="vertical-align:top;text-align:left;"><h3>System</h3></th>
-                  <td><h4>Vendor:<h4></td>
+                  <th rowspan="2" style="vertical-align:top;text-align:left;">
+                    <h3>System</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
                   <td>{{selectedSnowflake.systemManufacturer}}</td>
                 </tr>
                 <tr>
-                  <td><h4>Model:<h4></td>
+                  <td>
+                    <h4>Model:<h4>
+                  </td>
                   <td>{{selectedSnowflake.systemProductName}}</td>
                 </tr>
-                  <td colspan="3">
-                    <v-divider></v-divider>
-                  </td>
+                <td colspan="3">
+                  <v-divider></v-divider>
+                </td>
                 </tr>
               </table>
               <br>
               <div>
                 <h2>Ethernet Ports</h2>
                 <v-divider></v-divider>
-                <v-data-table :items="selectedSnowflake.networks.ethernet" :hide-default-footer="true" dense calculate-widths>
+                <v-data-table :items="selectedSnowflake.networks.ethernet" :hide-default-footer="true" dense
+                  calculate-widths>
                   <template v-slot:item="{ item }">
                     <tr>
                       <td>
@@ -272,17 +326,155 @@
       </v-dialog>
 
       <!--
+        Snowflake devicemap dialog
+      -->
+      <v-dialog v-model="snowflakeDevicemapSelected" width="80%">
+        <v-card>
+          <v-app-bar dense dark class="light-green">
+            <v-btn icon @click="resetSnowflakeDevicemap()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-app-bar-title>Snowflake Devicemap</v-app-bar-title>
+          </v-app-bar>
+          <br>
+          <v-card>
+            <v-card-text><h2>DMI Info</h2>
+              <table>
+                <tr>
+                  <td colspan="3">
+                    <v-divider></v-divider>
+                  </td>
+                </tr>
+                <tr>
+                  <th rowspan="2" style="vertical-align:top;text-align:left;">
+                    <h3>Baseboard</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
+                  <td>{{selectedSnowflake.baseboardManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>Model:<h4>
+                  </td>
+                  <td>{{selectedSnowflake.baseboardProductName}}</td>
+                </tr>
+                <td colspan="3">
+                  <v-divider></v-divider>
+                </td>
+                </tr>
+                <tr>
+                  <th rowspan="2" style="vertical-align:top;text-align:left;">
+                    <h3>System</h3>
+                  </th>
+                  <td>
+                    <h4>Vendor:<h4>
+                  </td>
+                  <td>{{selectedSnowflake.systemManufacturer}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>Model:<h4>
+                  </td>
+                  <td>{{selectedSnowflake.systemProductName}}</td>
+                </tr>
+                <td colspan="3">
+                  <v-divider></v-divider>
+                </td>
+                </tr>
+              </table>
+              <br>
+              <div>
+                <h2>Ethernet Ports</h2>
+                <v-divider></v-divider>
+                <br>
+                <v-data-table :headers="devicemapEthernetHeaders" :items="selectedSnowflake.devicemap.ethernet"
+                  :hide-default-footer="true" dense calculate-widths>
+                  <template v-slot:item="{ item }">
+                    <tr>
+                      <td>
+                        {{item.pciAddress}}
+                      </td>
+                      <td>
+                        <input v-model="item.name" @change="setDevicemap"  style="width: 100%;">
+                      </td>
+                      <td>
+                        <v-select v-model="item.type" :items="portTypes" single-line @change="setDevicemap"/>
+                      </td>
+                      <td>
+                        <v-textarea v-model="item.description" @change="setDevicemap" rows="2" no-resize></v-textarea>
+                      </td>
+                      <td>
+                        <input v-model="item.bcpNetwork.standaloneBranch.name" @change="setDevicemap"  style="width: 100%;">
+                      </td>
+                      <td>
+                        <v-textarea v-model="item.bcpNetwork.standaloneBranch.description" @change="setDevicemap" rows="2" no-resize></v-textarea>
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </div>
+              <div v-if="selectedSnowflake.networks.lte && selectedSnowflake.networks.lte.length > 0">
+                <h2>LTE Ports</h2>
+                <v-divider></v-divider>
+                <br>
+                <v-data-table :headers="devicemapLTEHeaders" :items="selectedSnowflake.devicemap.lte"
+                  :hide-default-footer="true" dense calculate-widths>
+                  <template v-slot:item="{ item }">
+                    <tr>
+                      <td>
+                        {{item.targetInterface}}
+                      </td>
+                      <td>
+                        <input v-model="item.name" @change="setDevicemap"  style="width: 100%;">
+                      </td>
+                      <td>
+                        <v-select v-model="item.type" :items="portTypes" single-line @change="setDevicemap" disabled/>
+                      </td>
+                      <td>
+                        <v-textarea v-model="item.description" @change="setDevicemap" rows="2" no-resize>
+                      </td>
+                      <td>
+                        <input v-model="item.bcpNetwork.standaloneBranch.name" @change="setDevicemap"  style="width: 100%;">
+                      </td>
+                      <td>
+                        <v-textarea v-model="item.bcpNetwork.standaloneBranch.description" @change="setDevicemap" rows="2" no-resize>
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </div>
+              <br>
+              <div>
+                <h2>Devicemap</h2>
+                <v-divider></v-divider>
+                <br>
+                <v-card dark>
+                  <v-snackbar v-model="textCopied" :timeout="timeout" top right><i
+                      class="material-icons">check_circle</i>Devicemap copied to clipboard!</v-snackbar>
+                  <v-btn fab class="light-green" class="white--text" data-clipboard-action="copy"
+                    data-clipboard-target="#devicemapText" style="position: absolute;right: 10px;transform: translateY(-50%);"><i class="material-icons">file_copy</i></v-btn>
+
+                  <v-btn fab right top class="light-green" class="white--text" @click="downloadDevicemap()" style="position: absolute;right: 20px;transform: translate(-100%, -50%);"><i class="material-icons">file_download</i></v-btn>
+                  <v-container style="overflow-x:auto; white-space: nowrap;">
+                    <pre id="devicemapText">{{JSON.stringify(selectedSnowflake.devicemap,null,2)}}</pre>
+                  </v-container>
+                </v-card>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-card>
+      </v-dialog>
+
+      <!--
         Main panel
       -->
       <v-main>
         <!--
           Side bar
         -->
-        <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-        >
+        <v-navigation-drawer v-model="drawer" absolute temporary>
           <v-list dense>
 
             <v-list-item link @click='selectedMenu = "home"'>
@@ -336,21 +528,12 @@
         -->
         <v-container fluid v-if='selectedMenu==="snowflakes"'>
           <div>
-            <v-data-table
-            :headers="snowflakeHeaders"
-            :items="snowflakes"
-            :items-per-page="25"
-            :search="search"
-            :loading="loading"
-            loading-text="Loading... Please wait"
-            mobile-breakpoint="0"
-            :footer-props="{
+            <v-data-table :headers="snowflakeHeaders" :items="snowflakes" :items-per-page="25" :search="search"
+              :loading="loading" loading-text="Loading... Please wait" mobile-breakpoint="0" :footer-props="{
               showFirstLastPage: true,
               'items-per-page-text':'Devices per page',
               'items-per-page-options': [10,25,50]
-            }"
-            dense
-            >
+            }" dense>
               <template v-slot:item="{ item }">
                 <tr>
                   <td>{{item.id}}</td>
@@ -362,10 +545,13 @@
                   <td>
                     <v-btn x-small @click="snowflakeDetails(item)">Details</v-btn>
                   </td>
+                  <td>
+                    <v-btn x-small @click="snowflakeDevicemap(item)">Devicemap</v-btn>
+                  </td>
                 </tr>
-              </template>         
+              </template>
             </v-data-table>
-          </div> 
+          </div>
         </v-container>
 
         <!--
@@ -373,21 +559,12 @@
         -->
         <v-container fluid v-if='selectedMenu==="devices"'>
           <div>
-            <v-data-table
-            :headers="deviceHeaders"
-            :items="devices"
-            :items-per-page="25"
-            :search="search"
-            :loading="loading"
-            loading-text="Loading... Please wait"
-            mobile-breakpoint="0"
-            :footer-props="{
+            <v-data-table :headers="deviceHeaders" :items="devices" :items-per-page="25" :search="search"
+              :loading="loading" loading-text="Loading... Please wait" mobile-breakpoint="0" :footer-props="{
               showFirstLastPage: true,
               'items-per-page-text':'Devices per page',
               'items-per-page-options': [10,25,50]
-            }"
-            dense
-            >
+            }" dense>
               <template v-slot:item="{ item }">
                 <tr>
                   <td>{{item.baseboardManufacturer}}</td>
@@ -403,18 +580,18 @@
                     <v-btn x-small @click="deviceDetails(item)">Details</v-btn>
                   </td>
                 </tr>
-              </template>         
+              </template>
             </v-data-table>
-          </div>  
+          </div>
         </v-container>
       </v-main>
     </v-app>
   </div>
 </body>
 <script>
-  
+
   var clipboard = new ClipboardJS('.v-btn')
-  
+
   const model = {
     "loading": true,
     "drawer": false,
@@ -518,6 +695,7 @@
     ],
     "snowflakes": [],
     "selectedSnowflake": {
+      id: "",
       baseboardManufacturer: "",
       baseboardProductName: "",
       systemManufacturer: "",
@@ -525,13 +703,69 @@
       networks: {
         ethernet: [],
         lte: []
-      }
+      },
+      devicemap: {}
     },
     "snowflakeSelected": false,
+    "snowflakeDevicemapSelected": false,
     "textCopied": false,
     "timeout": 4000,
+    "portTypes": ['WAN', 'LAN', 'MGMT', 'HASync', 'HAFabric'],
+    "devicemapEthernetHeaders": [
+      {
+        text: "PCI Address",
+        sortable: false,
+      },
+      {
+        text: "Name",
+        sortable: false
+      },
+      {
+        text: "Type",
+        sortable: false,
+      },
+      {
+        text: "Description",
+        sortable: false,
+      },
+      {
+        text: "BCP Network Name",
+        sortable: false,
+      },
+      {
+        text: "BCP Network Description",
+        sortable: false,
+      },
+    ],
+    "devicemapLTEHeaders": [
+      {
+        text: "Target Interface",
+        sortable: false,
+      },
+      {
+        text: "Name",
+        sortable: false
+      },
+      {
+        text: "Type",
+        sortable: false,
+      },
+      {
+        text: "Description",
+        sortable: false,
+      },
+      {
+        text: "BCP Network Name",
+        sortable: false,
+      },
+      {
+        text: "BCP Network Description",
+        sortable: false,
+      },
+    ]
+
   }
-  
+
   new Vue({
     el: '#app',
     vuetify: new Vuetify({
@@ -553,37 +787,37 @@
     }),
     data: model,
     methods: {
-      fetchData(){
+      fetchData() {
         let snowflakesLoaded = false
         let devicesLoaded = false
 
         const devicePromise = fetch('api/devices')
-        .then(response => {
-          console.log('got device data')
-          response.json().then(data => {
-            this.devices = data
+          .then(response => {
+            console.log('got device data')
+            response.json().then(data => {
+              this.devices = data
+            })
+            devicesLoaded = true
+            if (snowflakesLoaded && devicesLoaded) {
+              this.loading = false
+            }
           })
-          devicesLoaded=true
-          if (snowflakesLoaded && devicesLoaded) {
-            this.loading = false
-          }
-        })
 
         const snowflakePromise = fetch('api/snowflakes')
-        .then(response => {
-          console.log('got snowflake data')
-          response.json().then(data => {
-            this.snowflakes = data
+          .then(response => {
+            console.log('got snowflake data')
+            response.json().then(data => {
+              this.snowflakes = data
+            })
+            snowflakesLoaded = true
+            if (snowflakesLoaded && devicesLoaded) {
+              this.loading = false
+            }
           })
-          snowflakesLoaded=true
-          if (snowflakesLoaded && devicesLoaded) {
-            this.loading = false
-          }
-        })
       },
-      resetSelectedDevice(){
+      resetSelectedDevice() {
         this.deviceSelected = false
-        this.selectedDevice ={
+        this.selectedDevice = {
           baseboardManufacturer: "",
           baseboardProductName: "",
           baseboardSerialNumber: "",
@@ -609,19 +843,122 @@
             lte: []
           },
           raw: {}
-        } 
+        }
       },
-      deviceDetails(device){
+
+      downloadDevicemap() {
+        downloadFile("devicemap.json", JSON.stringify(this.selectedSnowflake.devicemap,null,2))
+      },
+
+      deviceDetails(device) {
         this.deviceSelected = true
         this.selectedDevice = device
       },
-      snowflakeDetails(snowflake){
+      snowflakeDetails(snowflake) {
         this.snowflakeSelected = true
         this.selectedSnowflake = snowflake
       },
-      resetSelectedSnowflake(){
-        this.snowflakeSelected = false
+
+      snowflakeDevicemap(snowflake) {
+        this.snowflakeDevicemapSelected = true
+        this.selectedSnowflake = snowflake
+
+        if (!snowflake.devicemap || snowflake.devicemap == {} || true) {
+          console.log("overwriting devicemap")
+          snowflake.devicemap = {}
+          snowflake.devicemap.description = `${snowflake.systemManufacturer} ${snowflake.systemProductName}`
+          snowflake.devicemap.ethernet = []
+          snowflake.devicemap.lte = []
+          let num_ports = snowflake.networks.ethernet.length
+
+          snowflake.networks.ethernet.forEach((network, index) => {
+            let outputMap = {
+              name: "ge-0-" + index,
+              description: "Port " + index + " labeled on the device",
+              pciAddress: network.pciAddress,
+              bcpNetwork: {}
+            }
+
+            if (index == 0) {
+              outputMap.type = "WAN"
+              outputMap.bcpNetwork = {
+                standaloneBranch: {
+                  name: "wan" + index,
+                  description: "WAN " + index + " Network Interface, connected to port " + index + " labeled on the device."
+                }
+              }
+            }
+            else if (index == num_ports - 1 && num_ports > 3) {
+              outputMap.type = "HAFabric"
+              outputMap.bcpNetwork = {
+                standaloneBranch: {
+                  name: "ha-fabric",
+                  description: "HA Fabric Network Interface, connected to port " + index + " labeled on the device."
+                }
+              }
+            }
+            else if (index == num_ports - 2 && num_ports > 3) {
+              outputMap.type = "HASync"
+              outputMap.bcpNetwork = {
+                standaloneBranch: {
+                  name: "ha-sync",
+                  description: "HA Sync Network Interface, connected to port " + index + " labeled on the device."
+                }
+              }
+            }
+            else {
+              outputMap.type = "LAN"
+              outputMap.bcpNetwork = {
+                standaloneBranch: {
+                  name: "lan" + index,
+                  description: "LAN " + index + " Network Interface, connected to port " + index + " labeled on the device."
+                }
+              }
+            }
+            snowflake.devicemap.ethernet.push(outputMap)
+          })
+
+
+          snowflake.networks.lte.forEach((network, index) => {
+            let outputMap = {
+              name: "lte-0-" + index,
+              description: "LTE device interface " + (index + 1),
+              targetInterface: network.targetInterface,
+              type: "WAN",
+              bcpNetwork: {
+                standaloneBranch: {
+                  name: "lte-0-" + index,
+                  description: "LTE network interface " + (index + 1)
+                }
+              }
+            }
+            snowflake.devicemap.lte.push(outputMap)
+          })
+          this.setDevicemap()
+        }
+      },
+
+      setDevicemap() {
+        console.log("Updating devicemap")
+        document.getElementById("devicemapText").innerHTML = JSON.stringify(this.selectedSnowflake.devicemap,null,2)
+        fetch('api/snowflakes/devicemap', {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            {
+              id: this.selectedSnowflake.id,
+              devicemap: this.selectedSnowflake.devicemap
+            }
+          )
+        }).then(res => {
+          console.log("Request complete! response:", res);
+        })
+      },
+
+      resetSnowflakeDevicemap() {
+        this.snowflakeDevicemapSelected = false
         this.selectedSnowflake = {
+          id: "",
           baseboardManufacturer: "",
           baseboardProductName: "",
           systemManufacturer: "",
@@ -629,11 +966,27 @@
           networks: {
             ethernet: [],
             lte: []
-          }
+          },
+          devicemap: {}
         }
       },
-      devicesBySnowflake(snowflakeId){
-        let output = this.devices.filter((device)=>{
+      resetSelectedSnowflake() {
+        this.snowflakeSelected = false
+        this.selectedSnowflake = {
+          id: "",
+          baseboardManufacturer: "",
+          baseboardProductName: "",
+          systemManufacturer: "",
+          systemProductName: "",
+          networks: {
+            ethernet: [],
+            lte: []
+          },
+          devicemap: {}
+        }
+      },
+      devicesBySnowflake(snowflakeId) {
+        let output = this.devices.filter((device) => {
           return device.snowflake === snowflakeId
         })
         return output
@@ -643,10 +996,25 @@
       this.fetchData();
     }
   })
-  
-  clipboard.on('success', ()=> {
+
+  clipboard.on('success', () => {
     console.log('text copied.')
     model.textCopied = true
   })
+
+  function downloadFile(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 </script>
+
 </html>

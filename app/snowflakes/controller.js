@@ -13,5 +13,15 @@ module.exports = {
         status: 'failure'
       })
     }
+  },
+
+  async updateDevicemap(req, res) {
+    try {
+      await helpers.updateDevicemap(req.body)
+    } catch (error) {
+      return res.status(400).send({
+        status: 'failure'
+      })
+    }
   }
 }
